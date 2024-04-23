@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.google.gson.Gson
 
 class RestauranteActivity():Activity() {
-    val list = ArrayList <Restaurante>()
+    val restaurantArray = ArrayList <Restaurante>()
     val gson= Gson()
 
     override fun onCreate(bundle: Bundle?) {
@@ -44,9 +44,9 @@ class RestauranteActivity():Activity() {
                 txtTipo.text.toString(),
                 txtDescricao.text.toString()
             )
-            list.add(r1)
+            restaurantArray.add(r1)
             salvarPrefs()
-            Log.i("RESTAURANTE_LOG","$list")
+            Log.i("RESTAURANTE_LOG","$restaurantArray")
             /*
             var listaString = gson.toJson(list)
             Log.i("AGENDA CONTATO", listaString)
@@ -61,11 +61,14 @@ class RestauranteActivity():Activity() {
 
         btnVerLista.setOnClickListener{
             carregarPrefs()
+            val intent = Intent(this, ListaActivity::class.java)
+            intent.putExtra("LISTA",gson.toJson(restaurantArray))
+            startActivity(intent)
         }
     }
 
     fun salvarPrefs(){
-        val strRestaurantes = gson.toJson(list)
+        val strRestaurantes = gson.toJson(restaurantArray)
         val sp = this.getSharedPreferences("RESTAURANTES", MODE_PRIVATE)
         sp.edit().apply{
             putString("TEXTO",strRestaurantes)
@@ -77,8 +80,9 @@ class RestauranteActivity():Activity() {
     fun carregarPrefs(){
         val sp = this.getSharedPreferences("RESTAURANTES", MODE_PRIVATE)
         val strRestaurantes = sp.getString("TEXTO","[]")
-        val intent = Intent(this, ListaActivity::class.java)
-        intent.putExtra("lista",strRestaurantes)
-        startActivity(intent)
+        val lista = gson.fromJson(strRestaurantes, ArrayList<Restaurante>()::class.java)
+        restaurantArray.clear()
+        restaurantArray.addAll(lista)
+
     }
 }

@@ -1,7 +1,5 @@
 package com.example.crud_restaurante
 
-import java.io.Serializable
-
 
 data class Restaurante(
     var id: Long,
@@ -11,4 +9,9 @@ data class Restaurante(
     var longitude: Double,
     var tipoComida: String,
     var descricao: String
-) : Serializable
+) {
+
+override fun toString(): String {
+    return nome+" "+endereco+" "+" "+latitude+" "+longitude+" "+tipoComida+" "+descricao
+}
+}
